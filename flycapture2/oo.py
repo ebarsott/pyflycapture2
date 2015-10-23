@@ -97,9 +97,23 @@ def get_camera_handle(identifier, context=None):
 
 
 class Format7Settings(object):
-    def __init__(self, settings):
-        # lookup mode, not very helpful
-        # lookup pixel format
+    def __init__(self, settings=None):
+        self.height = None
+        self.width = None
+        self.mode = None
+        self.pixelFormat = None
+        self.offsetX = None
+        self.offsetY = None
+
+    def from_settings(self, settings):
+        self.height = settings.height
+        self.width = settings.width
+        self.mode = settings.mode
+        self.pixelFormat = settings.pixelFormat
+        self.offsetX = settings.offsetX
+        self.offsetY = settings.offsetY
+
+    def to_settings(self):
         pass
 
 
@@ -121,7 +135,7 @@ class PointGrey(object):
     def get_config(self):
         self.connect()
         settings = raw.fc2Format7ImageSettings()
-        packet_size = ctypes.c_int()
+        packet_size = ctypes.c_uint()
         percent = ctypes.c_float()
         check_return(
             raw.fc2GetFormat7Configuration, self._c, settings,
