@@ -88,6 +88,20 @@ def get_camera_handle(identifier, context=None):
     return g
 
 
+class Format7Settings(object):
+    def __init__(self, settings):
+        # lookup mode, not very helpful
+        # lookup pixel format
+        pass
+
+
+# TODO fc2ConvertImageTo to correct bayer? or to grey?
+# TODO fc2GetFormat7Info contains: maxHeight maxWidth etc...
+# TODO fc2GetCameraInfo contains: sensor info
+# TODO fc2GetProperty, fc2GetPropertyInfo
+# TODO mode for setting non-format7 stuff:
+#  fc2GetVideoModeAndFrameRate use ...Info to check if supported
+
 class PointGrey(object):
     def __init__(self, identifier=0, context=None):
         if context is None:
@@ -96,8 +110,21 @@ class PointGrey(object):
         self.connected = False
         self.capturing = False
 
-    def config(self):
-        pass
+    def get_config(self):
+        self.connect()
+        settings = raw.fc2Format7ImageSettings()
+        packet_size = ctypes.c_int()
+        percent = ctypes.c_float()
+        check_return(
+            raw.fc2GetFormat7Configuration, self._c, settings,
+            packet_size, percent)
+        return settings, packet_size.value, percent.value
+
+    def set_config(self, settings, percent=100.):
+        self.connect()
+        percent = ctypes.c_float(percent)
+        check_return(
+            raw.fc2SetFormat7Configuration, self._c, settings, percent)
 
     def connect(self):
         if self.connected:
