@@ -1,7 +1,4 @@
 #!/usr/bin/env python
-"""
-All calls need a context
-"""
 
 import ctypes
 
