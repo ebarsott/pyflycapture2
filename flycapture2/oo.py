@@ -158,18 +158,18 @@ class PointGrey(object):
             packet_size, percent)
         return settings, packet_size.value, percent.value
 
-
     def validate_config(self, settings):
         self.connect()
         packet_info = raw.fc2Format7PacketInfo()
         valid = ctypes.c_int(0)
         check_return(
-            raw.fc2ValidateFormat7Settings, c._c, settings, valid, packet_info)
+            raw.fc2ValidateFormat7Settings, self._c, settings,
+            valid, packet_info)
         return bool(valid.value)
 
     def set_config(self, settings, percent=100.):
         self.connect()
-        if not validate_config(settings):
+        if not self.validate_config(settings):
             raise FlyCapture2ConfigError(
                 "Invalid settings: %s" % as_dict(settings))
         percent = ctypes.c_float(percent)
