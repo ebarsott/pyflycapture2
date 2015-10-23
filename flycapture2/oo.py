@@ -3,134 +3,56 @@
 All calls need a context
 """
 
-import atexit
 import ctypes
 
 import numpy
 
+from . import ctx
+from . import errors
 from . import raw
-
-
-error_codes = dict([(raw.fc2Error[k], k) for k in raw.fc2Error])
-
-
-class FlyCapture2Error(Exception):
-    pass
-
-
-class FlyCapture2ConfigError(FlyCapture2Error):
-    pass
+from . import structs
 
 
 def as_dict(obj):
     return {a: getattr(obj, a) for a in dir(obj) if a[0] != '_'}
 
 
-def check_return(f, *args, **kwargs):
-    r = f(*args, **kwargs)
-    if r != 0:
-        raise FlyCapture2Error(
-            "%s returned error %s[%s]" % (f.name, r, error_codes[r]))
-
-
-class Context(object):
-    instances = []
-
-    @classmethod
-    def get(cls, index=0):
-        if index >= len(cls.instances):
-            return cls.new()
-        return cls.instances[index]
-
-    @classmethod
-    def new(cls):
-        c = raw.fc2Context()
-        check_return(raw.fc2CreateContext, c)
-        cls.instances.append(c)
-        return c
-
-    @classmethod
-    def dispose(cls):
-        for instance in cls.instances:
-            print "disposing of context %s" % hex(id(instance))
-            raw.fc2DestroyContext(instance)
-        cls.instances = []
-
-atexit.register(Context.dispose)
-
-
 def get_n_cameras(context=None):
     if context is None:
-        context = Context.get()
+        context = ctx.get()
     n = ctypes.c_int(0)
-    check_return(raw.fc2GetNumOfCameras, context, n)
+    errors.check_return(raw.fc2GetNumOfCameras, context, n)
     return n.value
 
 
 def get_n_devices(context=None):
     if context is None:
-        context = Context.get()
+        context = ctx.get()
     n = ctypes.c_int(0)
-    check_return(raw.fc2GetNumOfDevices, context, n)
+    errors.check_return(raw.fc2GetNumOfDevices, context, n)
     return n.value
 
 
 def get_serial_number(index, context=None):
     if context is None:
-        context = Context.get()
+        context = ctx.get()
     sn = ctypes.c_int(0)
-    check_return(raw.fc2GetCameraSerialNumberFromIndex, context, index, sn)
+    errors.check_return(
+        raw.fc2GetCameraSerialNumberFromIndex, context, index, sn)
     return sn.value
 
 
 def get_camera_handle(identifier, context=None):
     if context is None:
-        context = Context.get()
+        context = ctx.get()
     g = raw.fc2PGRGuid()
     if isinstance(identifier, (str, unicode)):
-        check_return(
+        errors.check_return(
             raw.fc2GetCameraFromSerialNumber, context, int(identifier), g)
     else:
-        check_return(
+        errors.check_return(
             raw.fc2GetCameraFromIndex, context, int(identifier), g)
     return g
-
-
-class WrappedStruct(object):
-    def __init__(self, struct_type, struct=None):
-        self._struct_type = struct_type
-        if struct is None:
-            struct = self._struct_type()
-        self.wrap(struct)
-
-    def wrap(self, struct):
-        for (n, t) in self._struct_type._fields_:
-            setattr(self, n, getattr(struct, n))
-
-    def unwrap(self):
-        struct = self._struct_type()
-        for (n, t) in self._struct_type._fields_:
-            setattr(struct, n, getattr(self, n))
-        return struct
-
-
-class Format7Settings(WrappedStruct):
-    def __init__(self, struct=None):
-        WrappedStruct.__init__(self, raw.fc2Format7ImageSettings, struct)
-        # TODO wrap mode? probably not
-
-    def get_pixel_format(self):
-        for k in raw.fc2PixelFormat:
-            if raw.fc2PixelFormat[k] == self.pixelFormat:
-                return k
-        raise KeyError("Invalid pixel_format: %s" % self.pixelFormat)
-
-    def set_pixel_format(self, pixel_format):
-        if isinstance(pixel_format, (str, unicode)):
-            if pixel_format not in raw.fc2PixelFormat:
-                raise KeyError("Invalid pixel_format: %s" % pixel_format)
-            pixel_format = raw.fc2PixelFormat[pixel_format]
-        self.pixelFormat = pixel_format
 
 
 # TODO fc2ConvertImageTo to correct bayer? or to grey?
@@ -143,7 +65,7 @@ class Format7Settings(WrappedStruct):
 class PointGrey(object):
     def __init__(self, identifier=0, context=None):
         if context is None:
-            self._c = Context.get()
+            self._c = ctx.get()
         self._g = get_camera_handle(identifier, context=self._c)
         self.connected = False
         self.capturing = False
@@ -153,59 +75,65 @@ class PointGrey(object):
         settings = raw.fc2Format7ImageSettings()
         packet_size = ctypes.c_uint()
         percent = ctypes.c_float()
-        check_return(
+        errors.check_return(
             raw.fc2GetFormat7Configuration, self._c, settings,
             packet_size, percent)
-        return settings, packet_size.value, percent.value
+        return (
+            structs.Format7Settings(settings), packet_size.value,
+            percent.value)
 
     def validate_config(self, settings):
         self.connect()
+        if isinstance(settings, structs.Format7Settings):
+            settings = settings.unwrap()
         packet_info = raw.fc2Format7PacketInfo()
         valid = ctypes.c_int(0)
-        check_return(
+        errors.check_return(
             raw.fc2ValidateFormat7Settings, self._c, settings,
             valid, packet_info)
         return bool(valid.value)
 
     def set_config(self, settings, percent=100.):
         self.connect()
+        if isinstance(settings, structs.Format7Settings):
+            settings = settings.unwrap()
         if not self.validate_config(settings):
-            raise FlyCapture2ConfigError(
+            raise errors.FlyCapture2ConfigError(
                 "Invalid settings: %s" % as_dict(settings))
         percent = ctypes.c_float(percent)
-        check_return(
+        errors.check_return(
             raw.fc2SetFormat7Configuration, self._c, settings, percent)
 
     def connect(self):
         if self.connected:
             return
-        check_return(raw.fc2Connect, self._c, self._g)
+        errors.check_return(raw.fc2Connect, self._c, self._g)
         self.connected = True
 
     def disconnect(self):
         if not self.connected:
             return
-        check_return(raw.fc2Disconnect, self._c)
+        errors.check_return(raw.fc2Disconnect, self._c)
         self.connected = False
 
     def start_capture(self):
         if self.capturing:
             return
         self.connect()
-        check_return(raw.fc2StartCapture, self._c)
+        errors.check_return(raw.fc2StartCapture, self._c)
         self.capturing = True
 
     def stop_capture(self):
         if not self.capturing:
             return
-        check_return(raw.fc2StopCapture, self._c)
+        errors.check_return(raw.fc2StopCapture, self._c)
         self.capturing = False
 
     def raw_grab(self):
         self.start_capture()
         im = raw.fc2Image()
-        check_return(raw.fc2CreateImage, im)
-        check_return(raw.fc2RetrieveBuffer, self._c, im)
+        errors.check_return(raw.fc2CreateImage, im)
+        errors.check_return(raw.fc2RetrieveBuffer, self._c, im)
         self.stop_capture()
         return im
 
@@ -214,6 +142,6 @@ class PointGrey(object):
         meta = as_dict(im)
         del meta['pData']
         a = numpy.ctypeslib.as_array(im.pData, (im.rows, im.cols)).copy()
-        check_return(raw.fc2DestroyImage, im)
+        errors.check_return(raw.fc2DestroyImage, im)
         self.stop_capture()
         return a, meta
