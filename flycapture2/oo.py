@@ -96,25 +96,41 @@ def get_camera_handle(identifier, context=None):
     return g
 
 
-class Format7Settings(object):
-    def __init__(self, settings=None):
-        self.height = None
-        self.width = None
-        self.mode = None
-        self.pixelFormat = None
-        self.offsetX = None
-        self.offsetY = None
+class WrappedStruct(object):
+    def __init__(self, struct_type, struct=None):
+        self._struct_type = struct_type
+        if struct is None:
+            struct = self._struct_type()
+        self.wrap(struct)
 
-    def from_settings(self, settings):
-        self.height = settings.height
-        self.width = settings.width
-        self.mode = settings.mode
-        self.pixelFormat = settings.pixelFormat
-        self.offsetX = settings.offsetX
-        self.offsetY = settings.offsetY
+    def wrap(self, struct):
+        for (n, t) in self._struct_type._fields_:
+            setattr(self, n, getattr(struct, n))
 
-    def to_settings(self):
-        pass
+    def unwrap(self):
+        struct = self._struct_type()
+        for (n, t) in self._struct_type._fields_:
+            setattr(struct, n, getattr(self, n))
+        return struct
+
+
+class Format7Settings(WrappedStruct):
+    def __init__(self, struct=None):
+        WrappedStruct.__init__(self, raw.fc2Format7ImageSettings, struct)
+        # TODO wrap mode? probably not
+
+    def get_pixel_format(self):
+        for k in raw.fc2PixelFormat:
+            if raw.fc2PixelFormat[k] == self.pixelFormat:
+                return k
+        raise KeyError("Invalid pixel_format: %s" % self.pixelFormat)
+
+    def set_pixel_format(self, pixel_format):
+        if isinstance(pixel_format, (str, unicode)):
+            if pixel_format not in raw.fc2PixelFormat:
+                raise KeyError("Invalid pixel_format: %s" % pixel_format)
+            pixel_format = raw.fc2PixelFormat[pixel_format]
+        self.pixelFormat = pixel_format
 
 
 # TODO fc2ConvertImageTo to correct bayer? or to grey?
