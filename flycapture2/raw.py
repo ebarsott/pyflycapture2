@@ -483,17 +483,17 @@ class fc2Image(ctypes.Structure):
         ('pData', ctypes.POINTER(ctypes.c_ubyte)),
         ('dataSize', ctypes.c_uint),
         ('receivedDataSize', ctypes.c_uint),
-        ('format', ctypes.c_int),
-        ('bayerFormat', ctypes.c_int),
+        ('format', ctypes.c_uint),
+        ('bayerFormat', ctypes.c_uint),
         ('imageImpl', ctypes.c_void_p),
     ]
 
 
 class fc2SystemInfo(ctypes.Structure):
     _fields_ = [
-        ('osType', ctypes.c_int),
+        ('osType', ctypes.c_uint),
         ('osDescription', ctypes.c_char * 512),
-        ('byteOrder', ctypes.c_int),
+        ('byteOrder', ctypes.c_uint),
         ('sysMemSize', ctypes.c_ulong),
         ('cpuDescription', ctypes.c_char * 512),
         ('numCpuCores', ctypes.c_ulong),
@@ -521,10 +521,10 @@ class fc2Config(ctypes.Structure):
         ('numImageNotifications', ctypes.c_uint),
         ('minNumImageNotifications', ctypes.c_uint),
         ('grabTimeout', ctypes.c_int),
-        ('grabMode', ctypes.c_int),
-        ('isochBusSpeed', ctypes.c_int),
-        ('asyncBusSpeed', ctypes.c_int),
-        ('bandwidthAllocation', ctypes.c_int),
+        ('grabMode', ctypes.c_uint),
+        ('isochBusSpeed', ctypes.c_uint),
+        ('asyncBusSpeed', ctypes.c_uint),
+        ('bandwidthAllocation', ctypes.c_uint),
         ('registerTimeoutRetries', ctypes.c_uint),
         ('registerTimeout', ctypes.c_uint),
         ('reserved', ctypes.c_uint * 16),
@@ -533,7 +533,7 @@ class fc2Config(ctypes.Structure):
 
 class fc2PropertyInfo(ctypes.Structure):
     _fields_ = [
-        ('type', ctypes.c_int),
+        ('type', ctypes.c_uint),
         ('present', ctypes.c_int),
         ('autoSupported', ctypes.c_int),
         ('manualSupported', ctypes.c_int),
@@ -553,7 +553,7 @@ class fc2PropertyInfo(ctypes.Structure):
 
 class fc2TriggerDelayInfo(ctypes.Structure):
     _fields_ = [
-        ('type', ctypes.c_int),
+        ('type', ctypes.c_uint),
         ('present', ctypes.c_int),
         ('autoSupported', ctypes.c_int),
         ('manualSupported', ctypes.c_int),
@@ -573,7 +573,7 @@ class fc2TriggerDelayInfo(ctypes.Structure):
 
 class fc2Property(ctypes.Structure):
     _fields_ = [
-        ('type', ctypes.c_int),
+        ('type', ctypes.c_uint),
         ('present', ctypes.c_int),
         ('absControl', ctypes.c_int),
         ('onePush', ctypes.c_int),
@@ -588,7 +588,7 @@ class fc2Property(ctypes.Structure):
 
 class fc2TriggerDelay(ctypes.Structure):
     _fields_ = [
-        ('type', ctypes.c_int),
+        ('type', ctypes.c_uint),
         ('present', ctypes.c_int),
         ('absControl', ctypes.c_int),
         ('onePush', ctypes.c_int),
@@ -652,19 +652,19 @@ class fc2StrobeControl(ctypes.Structure):
 
 class fc2Format7ImageSettings(ctypes.Structure):
     _fields_ = [
-        ('mode', ctypes.c_int),
+        ('mode', ctypes.c_uint),
         ('offsetX', ctypes.c_uint),
         ('offsetY', ctypes.c_uint),
         ('width', ctypes.c_uint),
         ('height', ctypes.c_uint),
-        ('pixelFormat', ctypes.c_int),
+        ('pixelFormat', ctypes.c_uint),
         ('reserved', ctypes.c_uint * 8),
     ]
 
 
 class fc2Format7Info(ctypes.Structure):
     _fields_ = [
-        ('mode', ctypes.c_int),
+        ('mode', ctypes.c_uint),
         ('maxWidth', ctypes.c_uint),
         ('maxHeight', ctypes.c_uint),
         ('offsetHStepSize', ctypes.c_uint),
@@ -704,7 +704,7 @@ class fc2MACAddress(ctypes.Structure):
 
 class fc2GigEProperty(ctypes.Structure):
     _fields_ = [
-        ('propType', ctypes.c_int),
+        ('propType', ctypes.c_uint),
         ('isReadable', ctypes.c_int),
         ('isWritable', ctypes.c_int),
         ('min', ctypes.c_uint),
@@ -756,7 +756,7 @@ class fc2GigEImageSettings(ctypes.Structure):
         ('offsetY', ctypes.c_uint),
         ('width', ctypes.c_uint),
         ('height', ctypes.c_uint),
-        ('pixelFormat', ctypes.c_int),
+        ('pixelFormat', ctypes.c_uint),
         ('reserved', ctypes.c_uint * 8),
     ]
 
@@ -792,8 +792,8 @@ class fc2ConfigROM(ctypes.Structure):
 class fc2CameraInfo(ctypes.Structure):
     _fields_ = [
         ('serialNumber', ctypes.c_uint),
-        ('interfaceType', ctypes.c_int),
-        ('driverType', ctypes.c_int),
+        ('interfaceType', ctypes.c_uint),
+        ('driverType', ctypes.c_uint),
         ('isColorCamera', ctypes.c_int),
         ('modelName', ctypes.c_char * 512),
         ('vendorName', ctypes.c_char * 512),
@@ -802,9 +802,9 @@ class fc2CameraInfo(ctypes.Structure):
         ('driverName', ctypes.c_char * 512),
         ('firmwareVersion', ctypes.c_char * 512),
         ('firmwareBuildTime', ctypes.c_char * 512),
-        ('maximumBusSpeed', ctypes.c_int),
-        ('pcieBusSpeed', ctypes.c_int),
-        ('bayerTileFormat', ctypes.c_int),
+        ('maximumBusSpeed', ctypes.c_uint),
+        ('pcieBusSpeed', ctypes.c_uint),
+        ('bayerTileFormat', ctypes.c_uint),
         ('busNumber', ctypes.c_ushort),
         ('nodeNumber', ctypes.c_ushort),
         ('iidcVer', ctypes.c_uint),
@@ -912,7 +912,7 @@ fc2TIFFCompressionMethod = Enum('fc2TIFFCompressionMethod', [
 
 class fc2TIFFOption(ctypes.Structure):
     _fields_ = [
-        ('compression', ctypes.c_int),
+        ('compression', ctypes.c_uint),
         ('reserved', ctypes.c_uint * 16),
     ]
 
@@ -972,44 +972,44 @@ fc2ImageEventCallback = ctypes.CFUNCTYPE(
 
 fc2AsyncCommandCallback = ctypes.CFUNCTYPE(
     None,
-    ctypes.c_int,
+    ctypes.c_uint,
     ctypes.c_void_p,
 )
 
 fc2CreateContext = Function(
-    'fc2CreateContext', ctypes.c_int,
+    'fc2CreateContext', ctypes.c_uint,
     ('pContext', ctypes.POINTER(fc2Context)),
 )
 fc2CreateContext.generate_spec(_lib)
 
 fc2CreateGigEContext = Function(
-    'fc2CreateGigEContext', ctypes.c_int,
+    'fc2CreateGigEContext', ctypes.c_uint,
     ('pContext', ctypes.POINTER(fc2Context)),
 )
 fc2CreateGigEContext.generate_spec(_lib)
 
 fc2DestroyContext = Function(
-    'fc2DestroyContext', ctypes.c_int,
+    'fc2DestroyContext', ctypes.c_uint,
     ('context', ctypes.c_void_p),
 )
 fc2DestroyContext.generate_spec(_lib)
 
 fc2FireBusReset = Function(
-    'fc2FireBusReset', ctypes.c_int,
+    'fc2FireBusReset', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pGuid', ctypes.POINTER(fc2PGRGuid)),
 )
 fc2FireBusReset.generate_spec(_lib)
 
 fc2GetNumOfCameras = Function(
-    'fc2GetNumOfCameras', ctypes.c_int,
+    'fc2GetNumOfCameras', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pNumCameras', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetNumOfCameras.generate_spec(_lib)
 
 fc2IsCameraControlable = Function(
-    'fc2IsCameraControlable', ctypes.c_int,
+    'fc2IsCameraControlable', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pGuid', ctypes.POINTER(fc2PGRGuid)),
     ('pControlable', ctypes.POINTER(BOOL)),
@@ -1017,7 +1017,7 @@ fc2IsCameraControlable = Function(
 fc2IsCameraControlable.generate_spec(_lib)
 
 fc2GetCameraFromIndex = Function(
-    'fc2GetCameraFromIndex', ctypes.c_int,
+    'fc2GetCameraFromIndex', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('index', ctypes.c_uint),
     ('pGuid', ctypes.POINTER(fc2PGRGuid)),
@@ -1025,7 +1025,7 @@ fc2GetCameraFromIndex = Function(
 fc2GetCameraFromIndex.generate_spec(_lib)
 
 fc2GetCameraFromSerialNumber = Function(
-    'fc2GetCameraFromSerialNumber', ctypes.c_int,
+    'fc2GetCameraFromSerialNumber', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('serialNumber', ctypes.c_uint),
     ('pGuid', ctypes.POINTER(fc2PGRGuid)),
@@ -1033,7 +1033,7 @@ fc2GetCameraFromSerialNumber = Function(
 fc2GetCameraFromSerialNumber.generate_spec(_lib)
 
 fc2GetCameraSerialNumberFromIndex = Function(
-    'fc2GetCameraSerialNumberFromIndex', ctypes.c_int,
+    'fc2GetCameraSerialNumberFromIndex', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('index', ctypes.c_uint),
     ('pSerialNumber', ctypes.POINTER(ctypes.c_uint)),
@@ -1041,22 +1041,22 @@ fc2GetCameraSerialNumberFromIndex = Function(
 fc2GetCameraSerialNumberFromIndex.generate_spec(_lib)
 
 fc2GetInterfaceTypeFromGuid = Function(
-    'fc2GetInterfaceTypeFromGuid', ctypes.c_int,
+    'fc2GetInterfaceTypeFromGuid', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pGuid', ctypes.POINTER(fc2PGRGuid)),
-    ('pInterfaceType', ctypes.POINTER(BOOL)),
+    ('pInterfaceType', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetInterfaceTypeFromGuid.generate_spec(_lib)
 
 fc2GetNumOfDevices = Function(
-    'fc2GetNumOfDevices', ctypes.c_int,
+    'fc2GetNumOfDevices', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pNumDevices', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetNumOfDevices.generate_spec(_lib)
 
 fc2GetDeviceFromIndex = Function(
-    'fc2GetDeviceFromIndex', ctypes.c_int,
+    'fc2GetDeviceFromIndex', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('index', ctypes.c_uint),
     ('pGuid', ctypes.POINTER(fc2PGRGuid)),
@@ -1064,30 +1064,30 @@ fc2GetDeviceFromIndex = Function(
 fc2GetDeviceFromIndex.generate_spec(_lib)
 
 fc2RegisterCallback = Function(
-    'fc2RegisterCallback', ctypes.c_int,
+    'fc2RegisterCallback', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('enumCallback', ctypes.POINTER(None)),
-    ('callbackType', ctypes.c_int),
+    ('callbackType', ctypes.c_uint),
     ('pParameter', ctypes.c_void_p),
     ('pCallbackHandle', ctypes.POINTER(fc2Context)),
 )
 fc2RegisterCallback.generate_spec(_lib)
 
 fc2UnregisterCallback = Function(
-    'fc2UnregisterCallback', ctypes.c_int,
+    'fc2UnregisterCallback', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('callbackHandle', ctypes.c_void_p),
 )
 fc2UnregisterCallback.generate_spec(_lib)
 
 fc2RescanBus = Function(
-    'fc2RescanBus', ctypes.c_int,
+    'fc2RescanBus', ctypes.c_uint,
     ('context', ctypes.c_void_p),
 )
 fc2RescanBus.generate_spec(_lib)
 
 fc2ForceIPAddressToCamera = Function(
-    'fc2ForceIPAddressToCamera', ctypes.c_int,
+    'fc2ForceIPAddressToCamera', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('macAddress', fc2MACAddress),
     ('ipAddress', fc2IPAddress),
@@ -1097,18 +1097,18 @@ fc2ForceIPAddressToCamera = Function(
 fc2ForceIPAddressToCamera.generate_spec(_lib)
 
 fc2ForceAllIPAddressesAutomatically = Function(
-    'fc2ForceAllIPAddressesAutomatically', ctypes.c_int,
+    'fc2ForceAllIPAddressesAutomatically', ctypes.c_uint,
 )
 fc2ForceAllIPAddressesAutomatically.generate_spec(_lib)
 
 fc2ForceIPAddressAutomatically = Function(
-    'fc2ForceIPAddressAutomatically', ctypes.c_int,
+    'fc2ForceIPAddressAutomatically', ctypes.c_uint,
     ('serialNumber', ctypes.c_uint),
 )
 fc2ForceIPAddressAutomatically.generate_spec(_lib)
 
 fc2DiscoverGigECameras = Function(
-    'fc2DiscoverGigECameras', ctypes.c_int,
+    'fc2DiscoverGigECameras', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('gigECameras', ctypes.POINTER(fc2CameraInfo)),
     ('arraySize', ctypes.POINTER(ctypes.c_uint)),
@@ -1116,7 +1116,7 @@ fc2DiscoverGigECameras = Function(
 fc2DiscoverGigECameras.generate_spec(_lib)
 
 fc2WriteRegister = Function(
-    'fc2WriteRegister', ctypes.c_int,
+    'fc2WriteRegister', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('value', ctypes.c_uint),
@@ -1124,7 +1124,7 @@ fc2WriteRegister = Function(
 fc2WriteRegister.generate_spec(_lib)
 
 fc2WriteRegisterBroadcast = Function(
-    'fc2WriteRegisterBroadcast', ctypes.c_int,
+    'fc2WriteRegisterBroadcast', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('value', ctypes.c_uint),
@@ -1132,7 +1132,7 @@ fc2WriteRegisterBroadcast = Function(
 fc2WriteRegisterBroadcast.generate_spec(_lib)
 
 fc2ReadRegister = Function(
-    'fc2ReadRegister', ctypes.c_int,
+    'fc2ReadRegister', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('pValue', ctypes.POINTER(ctypes.c_uint)),
@@ -1140,7 +1140,7 @@ fc2ReadRegister = Function(
 fc2ReadRegister.generate_spec(_lib)
 
 fc2WriteRegisterBlock = Function(
-    'fc2WriteRegisterBlock', ctypes.c_int,
+    'fc2WriteRegisterBlock', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('addressHigh', ctypes.c_ushort),
     ('addressLow', ctypes.c_uint),
@@ -1150,7 +1150,7 @@ fc2WriteRegisterBlock = Function(
 fc2WriteRegisterBlock.generate_spec(_lib)
 
 fc2ReadRegisterBlock = Function(
-    'fc2ReadRegisterBlock', ctypes.c_int,
+    'fc2ReadRegisterBlock', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('addressHigh', ctypes.c_ushort),
     ('addressLow', ctypes.c_uint),
@@ -1160,20 +1160,20 @@ fc2ReadRegisterBlock = Function(
 fc2ReadRegisterBlock.generate_spec(_lib)
 
 fc2Connect = Function(
-    'fc2Connect', ctypes.c_int,
+    'fc2Connect', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('guid', ctypes.POINTER(fc2PGRGuid)),
 )
 fc2Connect.generate_spec(_lib)
 
 fc2Disconnect = Function(
-    'fc2Disconnect', ctypes.c_int,
+    'fc2Disconnect', ctypes.c_uint,
     ('context', ctypes.c_void_p),
 )
 fc2Disconnect.generate_spec(_lib)
 
 fc2SetCallback = Function(
-    'fc2SetCallback', ctypes.c_int,
+    'fc2SetCallback', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pCallbackFn', ctypes.POINTER(None)),
     ('pCallbackData', ctypes.c_void_p),
@@ -1181,13 +1181,13 @@ fc2SetCallback = Function(
 fc2SetCallback.generate_spec(_lib)
 
 fc2StartCapture = Function(
-    'fc2StartCapture', ctypes.c_int,
+    'fc2StartCapture', ctypes.c_uint,
     ('context', ctypes.c_void_p),
 )
 fc2StartCapture.generate_spec(_lib)
 
 fc2StartCaptureCallback = Function(
-    'fc2StartCaptureCallback', ctypes.c_int,
+    'fc2StartCaptureCallback', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pCallbackFn', ctypes.POINTER(None)),
     ('pCallbackData', ctypes.c_void_p),
@@ -1195,14 +1195,14 @@ fc2StartCaptureCallback = Function(
 fc2StartCaptureCallback.generate_spec(_lib)
 
 fc2StartSyncCapture = Function(
-    'fc2StartSyncCapture', ctypes.c_int,
+    'fc2StartSyncCapture', ctypes.c_uint,
     ('numCameras', ctypes.c_uint),
     ('pContexts', ctypes.POINTER(fc2Context)),
 )
 fc2StartSyncCapture.generate_spec(_lib)
 
 fc2StartSyncCaptureCallback = Function(
-    'fc2StartSyncCaptureCallback', ctypes.c_int,
+    'fc2StartSyncCaptureCallback', ctypes.c_uint,
     ('numCameras', ctypes.c_uint),
     ('pContexts', ctypes.POINTER(fc2Context)),
     ('pCallbackFns', ctypes.POINTER(fc2BusEventCallback)),
@@ -1211,20 +1211,20 @@ fc2StartSyncCaptureCallback = Function(
 fc2StartSyncCaptureCallback.generate_spec(_lib)
 
 fc2RetrieveBuffer = Function(
-    'fc2RetrieveBuffer', ctypes.c_int,
+    'fc2RetrieveBuffer', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pImage', ctypes.POINTER(fc2Image)),
 )
 fc2RetrieveBuffer.generate_spec(_lib)
 
 fc2StopCapture = Function(
-    'fc2StopCapture', ctypes.c_int,
+    'fc2StopCapture', ctypes.c_uint,
     ('context', ctypes.c_void_p),
 )
 fc2StopCapture.generate_spec(_lib)
 
 fc2SetUserBuffers = Function(
-    'fc2SetUserBuffers', ctypes.c_int,
+    'fc2SetUserBuffers', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('ppMemBuffers', ctypes.POINTER(ctypes.c_ubyte)),
     ('size', ctypes.c_int),
@@ -1233,56 +1233,56 @@ fc2SetUserBuffers = Function(
 fc2SetUserBuffers.generate_spec(_lib)
 
 fc2GetConfiguration = Function(
-    'fc2GetConfiguration', ctypes.c_int,
+    'fc2GetConfiguration', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('config', ctypes.POINTER(fc2Config)),
 )
 fc2GetConfiguration.generate_spec(_lib)
 
 fc2SetConfiguration = Function(
-    'fc2SetConfiguration', ctypes.c_int,
+    'fc2SetConfiguration', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('config', ctypes.POINTER(fc2Config)),
 )
 fc2SetConfiguration.generate_spec(_lib)
 
 fc2GetCameraInfo = Function(
-    'fc2GetCameraInfo', ctypes.c_int,
+    'fc2GetCameraInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pCameraInfo', ctypes.POINTER(fc2CameraInfo)),
 )
 fc2GetCameraInfo.generate_spec(_lib)
 
 fc2GetPropertyInfo = Function(
-    'fc2GetPropertyInfo', ctypes.c_int,
+    'fc2GetPropertyInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('propInfo', ctypes.POINTER(fc2PropertyInfo)),
 )
 fc2GetPropertyInfo.generate_spec(_lib)
 
 fc2GetProperty = Function(
-    'fc2GetProperty', ctypes.c_int,
+    'fc2GetProperty', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('prop', ctypes.POINTER(fc2Property)),
 )
 fc2GetProperty.generate_spec(_lib)
 
 fc2SetProperty = Function(
-    'fc2SetProperty', ctypes.c_int,
+    'fc2SetProperty', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('prop', ctypes.POINTER(fc2Property)),
 )
 fc2SetProperty.generate_spec(_lib)
 
 fc2SetPropertyBroadcast = Function(
-    'fc2SetPropertyBroadcast', ctypes.c_int,
+    'fc2SetPropertyBroadcast', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('prop', ctypes.POINTER(fc2Property)),
 )
 fc2SetPropertyBroadcast.generate_spec(_lib)
 
 fc2GetGPIOPinDirection = Function(
-    'fc2GetGPIOPinDirection', ctypes.c_int,
+    'fc2GetGPIOPinDirection', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pin', ctypes.c_uint),
     ('pDirection', ctypes.POINTER(ctypes.c_uint)),
@@ -1290,7 +1290,7 @@ fc2GetGPIOPinDirection = Function(
 fc2GetGPIOPinDirection.generate_spec(_lib)
 
 fc2SetGPIOPinDirection = Function(
-    'fc2SetGPIOPinDirection', ctypes.c_int,
+    'fc2SetGPIOPinDirection', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pin', ctypes.c_uint),
     ('direction', ctypes.c_uint),
@@ -1298,7 +1298,7 @@ fc2SetGPIOPinDirection = Function(
 fc2SetGPIOPinDirection.generate_spec(_lib)
 
 fc2SetGPIOPinDirectionBroadcast = Function(
-    'fc2SetGPIOPinDirectionBroadcast', ctypes.c_int,
+    'fc2SetGPIOPinDirectionBroadcast', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pin', ctypes.c_uint),
     ('direction', ctypes.c_uint),
@@ -1306,128 +1306,128 @@ fc2SetGPIOPinDirectionBroadcast = Function(
 fc2SetGPIOPinDirectionBroadcast.generate_spec(_lib)
 
 fc2GetTriggerModeInfo = Function(
-    'fc2GetTriggerModeInfo', ctypes.c_int,
+    'fc2GetTriggerModeInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('triggerModeInfo', ctypes.POINTER(fc2TriggerModeInfo)),
 )
 fc2GetTriggerModeInfo.generate_spec(_lib)
 
 fc2GetTriggerMode = Function(
-    'fc2GetTriggerMode', ctypes.c_int,
+    'fc2GetTriggerMode', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('triggerMode', ctypes.POINTER(fc2TriggerMode)),
 )
 fc2GetTriggerMode.generate_spec(_lib)
 
 fc2SetTriggerMode = Function(
-    'fc2SetTriggerMode', ctypes.c_int,
+    'fc2SetTriggerMode', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('triggerMode', ctypes.POINTER(fc2TriggerMode)),
 )
 fc2SetTriggerMode.generate_spec(_lib)
 
 fc2SetTriggerModeBroadcast = Function(
-    'fc2SetTriggerModeBroadcast', ctypes.c_int,
+    'fc2SetTriggerModeBroadcast', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('triggerMode', ctypes.POINTER(fc2TriggerMode)),
 )
 fc2SetTriggerModeBroadcast.generate_spec(_lib)
 
 fc2FireSoftwareTrigger = Function(
-    'fc2FireSoftwareTrigger', ctypes.c_int,
+    'fc2FireSoftwareTrigger', ctypes.c_uint,
     ('context', ctypes.c_void_p),
 )
 fc2FireSoftwareTrigger.generate_spec(_lib)
 
 fc2FireSoftwareTriggerBroadcast = Function(
-    'fc2FireSoftwareTriggerBroadcast', ctypes.c_int,
+    'fc2FireSoftwareTriggerBroadcast', ctypes.c_uint,
     ('context', ctypes.c_void_p),
 )
 fc2FireSoftwareTriggerBroadcast.generate_spec(_lib)
 
 fc2GetTriggerDelayInfo = Function(
-    'fc2GetTriggerDelayInfo', ctypes.c_int,
+    'fc2GetTriggerDelayInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('triggerDelayInfo', ctypes.POINTER(fc2PropertyInfo)),
 )
 fc2GetTriggerDelayInfo.generate_spec(_lib)
 
 fc2GetTriggerDelay = Function(
-    'fc2GetTriggerDelay', ctypes.c_int,
+    'fc2GetTriggerDelay', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('triggerDelay', ctypes.POINTER(fc2Property)),
 )
 fc2GetTriggerDelay.generate_spec(_lib)
 
 fc2SetTriggerDelay = Function(
-    'fc2SetTriggerDelay', ctypes.c_int,
+    'fc2SetTriggerDelay', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('triggerDelay', ctypes.POINTER(fc2Property)),
 )
 fc2SetTriggerDelay.generate_spec(_lib)
 
 fc2SetTriggerDelayBroadcast = Function(
-    'fc2SetTriggerDelayBroadcast', ctypes.c_int,
+    'fc2SetTriggerDelayBroadcast', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('triggerDelay', ctypes.POINTER(fc2Property)),
 )
 fc2SetTriggerDelayBroadcast.generate_spec(_lib)
 
 fc2GetStrobeInfo = Function(
-    'fc2GetStrobeInfo', ctypes.c_int,
+    'fc2GetStrobeInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('strobeInfo', ctypes.POINTER(fc2StrobeInfo)),
 )
 fc2GetStrobeInfo.generate_spec(_lib)
 
 fc2GetStrobe = Function(
-    'fc2GetStrobe', ctypes.c_int,
+    'fc2GetStrobe', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('strobeControl', ctypes.POINTER(fc2StrobeControl)),
 )
 fc2GetStrobe.generate_spec(_lib)
 
 fc2SetStrobe = Function(
-    'fc2SetStrobe', ctypes.c_int,
+    'fc2SetStrobe', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('strobeControl', ctypes.POINTER(fc2StrobeControl)),
 )
 fc2SetStrobe.generate_spec(_lib)
 
 fc2SetStrobeBroadcast = Function(
-    'fc2SetStrobeBroadcast', ctypes.c_int,
+    'fc2SetStrobeBroadcast', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('strobeControl', ctypes.POINTER(fc2StrobeControl)),
 )
 fc2SetStrobeBroadcast.generate_spec(_lib)
 
 fc2GetVideoModeAndFrameRateInfo = Function(
-    'fc2GetVideoModeAndFrameRateInfo', ctypes.c_int,
+    'fc2GetVideoModeAndFrameRateInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
-    ('videoMode', ctypes.c_int),
-    ('frameRate', ctypes.c_int),
+    ('videoMode', ctypes.c_uint),
+    ('frameRate', ctypes.c_uint),
     ('pSupported', ctypes.POINTER(BOOL)),
 )
 fc2GetVideoModeAndFrameRateInfo.generate_spec(_lib)
 
 fc2GetVideoModeAndFrameRate = Function(
-    'fc2GetVideoModeAndFrameRate', ctypes.c_int,
+    'fc2GetVideoModeAndFrameRate', ctypes.c_uint,
     ('context', ctypes.c_void_p),
-    ('videoMode', ctypes.POINTER(BOOL)),
-    ('frameRate', ctypes.POINTER(BOOL)),
+    ('videoMode', ctypes.POINTER(ctypes.c_uint)),
+    ('frameRate', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetVideoModeAndFrameRate.generate_spec(_lib)
 
 fc2SetVideoModeAndFrameRate = Function(
-    'fc2SetVideoModeAndFrameRate', ctypes.c_int,
+    'fc2SetVideoModeAndFrameRate', ctypes.c_uint,
     ('context', ctypes.c_void_p),
-    ('videoMode', ctypes.c_int),
-    ('frameRate', ctypes.c_int),
+    ('videoMode', ctypes.c_uint),
+    ('frameRate', ctypes.c_uint),
 )
 fc2SetVideoModeAndFrameRate.generate_spec(_lib)
 
 fc2GetFormat7Info = Function(
-    'fc2GetFormat7Info', ctypes.c_int,
+    'fc2GetFormat7Info', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('info', ctypes.POINTER(fc2Format7Info)),
     ('pSupported', ctypes.POINTER(BOOL)),
@@ -1435,7 +1435,7 @@ fc2GetFormat7Info = Function(
 fc2GetFormat7Info.generate_spec(_lib)
 
 fc2ValidateFormat7Settings = Function(
-    'fc2ValidateFormat7Settings', ctypes.c_int,
+    'fc2ValidateFormat7Settings', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('imageSettings', ctypes.POINTER(fc2Format7ImageSettings)),
     ('settingsAreValid', ctypes.POINTER(BOOL)),
@@ -1444,7 +1444,7 @@ fc2ValidateFormat7Settings = Function(
 fc2ValidateFormat7Settings.generate_spec(_lib)
 
 fc2GetFormat7Configuration = Function(
-    'fc2GetFormat7Configuration', ctypes.c_int,
+    'fc2GetFormat7Configuration', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('imageSettings', ctypes.POINTER(fc2Format7ImageSettings)),
     ('packetSize', ctypes.POINTER(ctypes.c_uint)),
@@ -1453,7 +1453,7 @@ fc2GetFormat7Configuration = Function(
 fc2GetFormat7Configuration.generate_spec(_lib)
 
 fc2SetFormat7ConfigurationPacket = Function(
-    'fc2SetFormat7ConfigurationPacket', ctypes.c_int,
+    'fc2SetFormat7ConfigurationPacket', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('imageSettings', ctypes.POINTER(fc2Format7ImageSettings)),
     ('packetSize', ctypes.c_uint),
@@ -1461,7 +1461,7 @@ fc2SetFormat7ConfigurationPacket = Function(
 fc2SetFormat7ConfigurationPacket.generate_spec(_lib)
 
 fc2SetFormat7Configuration = Function(
-    'fc2SetFormat7Configuration', ctypes.c_int,
+    'fc2SetFormat7Configuration', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('imageSettings', ctypes.POINTER(fc2Format7ImageSettings)),
     ('percentSpeed', ctypes.c_float),
@@ -1469,7 +1469,7 @@ fc2SetFormat7Configuration = Function(
 fc2SetFormat7Configuration.generate_spec(_lib)
 
 fc2WriteGVCPRegister = Function(
-    'fc2WriteGVCPRegister', ctypes.c_int,
+    'fc2WriteGVCPRegister', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('value', ctypes.c_uint),
@@ -1477,7 +1477,7 @@ fc2WriteGVCPRegister = Function(
 fc2WriteGVCPRegister.generate_spec(_lib)
 
 fc2WriteGVCPRegisterBroadcast = Function(
-    'fc2WriteGVCPRegisterBroadcast', ctypes.c_int,
+    'fc2WriteGVCPRegisterBroadcast', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('value', ctypes.c_uint),
@@ -1485,7 +1485,7 @@ fc2WriteGVCPRegisterBroadcast = Function(
 fc2WriteGVCPRegisterBroadcast.generate_spec(_lib)
 
 fc2ReadGVCPRegister = Function(
-    'fc2ReadGVCPRegister', ctypes.c_int,
+    'fc2ReadGVCPRegister', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('pValue', ctypes.POINTER(ctypes.c_uint)),
@@ -1493,7 +1493,7 @@ fc2ReadGVCPRegister = Function(
 fc2ReadGVCPRegister.generate_spec(_lib)
 
 fc2WriteGVCPRegisterBlock = Function(
-    'fc2WriteGVCPRegisterBlock', ctypes.c_int,
+    'fc2WriteGVCPRegisterBlock', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('pBuffer', ctypes.POINTER(ctypes.c_uint)),
@@ -1502,7 +1502,7 @@ fc2WriteGVCPRegisterBlock = Function(
 fc2WriteGVCPRegisterBlock.generate_spec(_lib)
 
 fc2ReadGVCPRegisterBlock = Function(
-    'fc2ReadGVCPRegisterBlock', ctypes.c_int,
+    'fc2ReadGVCPRegisterBlock', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('pBuffer', ctypes.POINTER(ctypes.c_uint)),
@@ -1511,7 +1511,7 @@ fc2ReadGVCPRegisterBlock = Function(
 fc2ReadGVCPRegisterBlock.generate_spec(_lib)
 
 fc2WriteGVCPMemory = Function(
-    'fc2WriteGVCPMemory', ctypes.c_int,
+    'fc2WriteGVCPMemory', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('pBuffer', ctypes.POINTER(ctypes.c_ubyte)),
@@ -1520,7 +1520,7 @@ fc2WriteGVCPMemory = Function(
 fc2WriteGVCPMemory.generate_spec(_lib)
 
 fc2ReadGVCPMemory = Function(
-    'fc2ReadGVCPMemory', ctypes.c_int,
+    'fc2ReadGVCPMemory', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('address', ctypes.c_uint),
     ('pBuffer', ctypes.POINTER(ctypes.c_ubyte)),
@@ -1529,78 +1529,78 @@ fc2ReadGVCPMemory = Function(
 fc2ReadGVCPMemory.generate_spec(_lib)
 
 fc2GetGigEProperty = Function(
-    'fc2GetGigEProperty', ctypes.c_int,
+    'fc2GetGigEProperty', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pGigEProp', ctypes.POINTER(fc2GigEProperty)),
 )
 fc2GetGigEProperty.generate_spec(_lib)
 
 fc2SetGigEProperty = Function(
-    'fc2SetGigEProperty', ctypes.c_int,
+    'fc2SetGigEProperty', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pGigEProp', ctypes.POINTER(fc2GigEProperty)),
 )
 fc2SetGigEProperty.generate_spec(_lib)
 
 fc2QueryGigEImagingMode = Function(
-    'fc2QueryGigEImagingMode', ctypes.c_int,
+    'fc2QueryGigEImagingMode', ctypes.c_uint,
     ('context', ctypes.c_void_p),
-    ('mode', ctypes.c_int),
+    ('mode', ctypes.c_uint),
     ('isSupported', ctypes.POINTER(BOOL)),
 )
 fc2QueryGigEImagingMode.generate_spec(_lib)
 
 fc2GetGigEImagingMode = Function(
-    'fc2GetGigEImagingMode', ctypes.c_int,
+    'fc2GetGigEImagingMode', ctypes.c_uint,
     ('context', ctypes.c_void_p),
-    ('mode', ctypes.POINTER(BOOL)),
+    ('mode', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetGigEImagingMode.generate_spec(_lib)
 
 fc2SetGigEImagingMode = Function(
-    'fc2SetGigEImagingMode', ctypes.c_int,
+    'fc2SetGigEImagingMode', ctypes.c_uint,
     ('context', ctypes.c_void_p),
-    ('mode', ctypes.c_int),
+    ('mode', ctypes.c_uint),
 )
 fc2SetGigEImagingMode.generate_spec(_lib)
 
 fc2GetGigEImageSettingsInfo = Function(
-    'fc2GetGigEImageSettingsInfo', ctypes.c_int,
+    'fc2GetGigEImageSettingsInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pInfo', ctypes.POINTER(fc2GigEImageSettingsInfo)),
 )
 fc2GetGigEImageSettingsInfo.generate_spec(_lib)
 
 fc2GetGigEImageSettings = Function(
-    'fc2GetGigEImageSettings', ctypes.c_int,
+    'fc2GetGigEImageSettings', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pImageSettings', ctypes.POINTER(fc2GigEImageSettings)),
 )
 fc2GetGigEImageSettings.generate_spec(_lib)
 
 fc2SetGigEImageSettings = Function(
-    'fc2SetGigEImageSettings', ctypes.c_int,
+    'fc2SetGigEImageSettings', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pImageSettings', ctypes.POINTER(fc2GigEImageSettings)),
 )
 fc2SetGigEImageSettings.generate_spec(_lib)
 
 fc2GetGigEConfig = Function(
-    'fc2GetGigEConfig', ctypes.c_int,
+    'fc2GetGigEConfig', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pConfig', ctypes.POINTER(fc2GigEConfig)),
 )
 fc2GetGigEConfig.generate_spec(_lib)
 
 fc2SetGigEConfig = Function(
-    'fc2SetGigEConfig', ctypes.c_int,
+    'fc2SetGigEConfig', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pConfig', ctypes.POINTER(fc2GigEConfig)),
 )
 fc2SetGigEConfig.generate_spec(_lib)
 
 fc2GetGigEImageBinningSettings = Function(
-    'fc2GetGigEImageBinningSettings', ctypes.c_int,
+    'fc2GetGigEImageBinningSettings', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('horzBinnningValue', ctypes.POINTER(ctypes.c_uint)),
     ('vertBinnningValue', ctypes.POINTER(ctypes.c_uint)),
@@ -1608,7 +1608,7 @@ fc2GetGigEImageBinningSettings = Function(
 fc2GetGigEImageBinningSettings.generate_spec(_lib)
 
 fc2SetGigEImageBinningSettings = Function(
-    'fc2SetGigEImageBinningSettings', ctypes.c_int,
+    'fc2SetGigEImageBinningSettings', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('horzBinnningValue', ctypes.c_uint),
     ('vertBinnningValue', ctypes.c_uint),
@@ -1616,14 +1616,14 @@ fc2SetGigEImageBinningSettings = Function(
 fc2SetGigEImageBinningSettings.generate_spec(_lib)
 
 fc2GetNumStreamChannels = Function(
-    'fc2GetNumStreamChannels', ctypes.c_int,
+    'fc2GetNumStreamChannels', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('numChannels', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetNumStreamChannels.generate_spec(_lib)
 
 fc2GetGigEStreamChannelInfo = Function(
-    'fc2GetGigEStreamChannelInfo', ctypes.c_int,
+    'fc2GetGigEStreamChannelInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('channel', ctypes.c_uint),
     ('pChannel', ctypes.POINTER(fc2GigEStreamChannel)),
@@ -1631,7 +1631,7 @@ fc2GetGigEStreamChannelInfo = Function(
 fc2GetGigEStreamChannelInfo.generate_spec(_lib)
 
 fc2SetGigEStreamChannelInfo = Function(
-    'fc2SetGigEStreamChannelInfo', ctypes.c_int,
+    'fc2SetGigEStreamChannelInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('channel', ctypes.c_uint),
     ('pChannel', ctypes.POINTER(fc2GigEStreamChannel)),
@@ -1639,14 +1639,14 @@ fc2SetGigEStreamChannelInfo = Function(
 fc2SetGigEStreamChannelInfo.generate_spec(_lib)
 
 fc2GetLUTInfo = Function(
-    'fc2GetLUTInfo', ctypes.c_int,
+    'fc2GetLUTInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pData', ctypes.POINTER(fc2LUTData)),
 )
 fc2GetLUTInfo.generate_spec(_lib)
 
 fc2GetLUTBankInfo = Function(
-    'fc2GetLUTBankInfo', ctypes.c_int,
+    'fc2GetLUTBankInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('bank', ctypes.c_uint),
     ('pReadSupported', ctypes.POINTER(BOOL)),
@@ -1655,28 +1655,28 @@ fc2GetLUTBankInfo = Function(
 fc2GetLUTBankInfo.generate_spec(_lib)
 
 fc2GetActiveLUTBank = Function(
-    'fc2GetActiveLUTBank', ctypes.c_int,
+    'fc2GetActiveLUTBank', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pActiveBank', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetActiveLUTBank.generate_spec(_lib)
 
 fc2SetActiveLUTBank = Function(
-    'fc2SetActiveLUTBank', ctypes.c_int,
+    'fc2SetActiveLUTBank', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('activeBank', ctypes.c_uint),
 )
 fc2SetActiveLUTBank.generate_spec(_lib)
 
 fc2EnableLUT = Function(
-    'fc2EnableLUT', ctypes.c_int,
+    'fc2EnableLUT', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('on', ctypes.c_int),
 )
 fc2EnableLUT.generate_spec(_lib)
 
 fc2GetLUTChannel = Function(
-    'fc2GetLUTChannel', ctypes.c_int,
+    'fc2GetLUTChannel', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('bank', ctypes.c_uint),
     ('channel', ctypes.c_uint),
@@ -1686,7 +1686,7 @@ fc2GetLUTChannel = Function(
 fc2GetLUTChannel.generate_spec(_lib)
 
 fc2SetLUTChannel = Function(
-    'fc2SetLUTChannel', ctypes.c_int,
+    'fc2SetLUTChannel', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('bank', ctypes.c_uint),
     ('channel', ctypes.c_uint),
@@ -1696,42 +1696,42 @@ fc2SetLUTChannel = Function(
 fc2SetLUTChannel.generate_spec(_lib)
 
 fc2GetMemoryChannel = Function(
-    'fc2GetMemoryChannel', ctypes.c_int,
+    'fc2GetMemoryChannel', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pCurrentChannel', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetMemoryChannel.generate_spec(_lib)
 
 fc2SaveToMemoryChannel = Function(
-    'fc2SaveToMemoryChannel', ctypes.c_int,
+    'fc2SaveToMemoryChannel', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('channel', ctypes.c_uint),
 )
 fc2SaveToMemoryChannel.generate_spec(_lib)
 
 fc2RestoreFromMemoryChannel = Function(
-    'fc2RestoreFromMemoryChannel', ctypes.c_int,
+    'fc2RestoreFromMemoryChannel', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('channel', ctypes.c_uint),
 )
 fc2RestoreFromMemoryChannel.generate_spec(_lib)
 
 fc2GetMemoryChannelInfo = Function(
-    'fc2GetMemoryChannelInfo', ctypes.c_int,
+    'fc2GetMemoryChannelInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pNumChannels', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetMemoryChannelInfo.generate_spec(_lib)
 
 fc2GetEmbeddedImageInfo = Function(
-    'fc2GetEmbeddedImageInfo', ctypes.c_int,
+    'fc2GetEmbeddedImageInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pInfo', ctypes.POINTER(fc2EmbeddedImageInfo)),
 )
 fc2GetEmbeddedImageInfo.generate_spec(_lib)
 
 fc2SetEmbeddedImageInfo = Function(
-    'fc2SetEmbeddedImageInfo', ctypes.c_int,
+    'fc2SetEmbeddedImageInfo', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pInfo', ctypes.POINTER(fc2EmbeddedImageInfo)),
 )
@@ -1744,89 +1744,89 @@ fc2GetRegisterString = Function(
 fc2GetRegisterString.generate_spec(_lib)
 
 fc2CreateImage = Function(
-    'fc2CreateImage', ctypes.c_int,
+    'fc2CreateImage', ctypes.c_uint,
     ('pImage', ctypes.POINTER(fc2Image)),
 )
 fc2CreateImage.generate_spec(_lib)
 
 fc2DestroyImage = Function(
-    'fc2DestroyImage', ctypes.c_int,
+    'fc2DestroyImage', ctypes.c_uint,
     ('image', ctypes.POINTER(fc2Image)),
 )
 fc2DestroyImage.generate_spec(_lib)
 
 fc2SetDefaultColorProcessing = Function(
-    'fc2SetDefaultColorProcessing', ctypes.c_int,
-    ('defaultMethod', ctypes.c_int),
+    'fc2SetDefaultColorProcessing', ctypes.c_uint,
+    ('defaultMethod', ctypes.c_uint),
 )
 fc2SetDefaultColorProcessing.generate_spec(_lib)
 
 fc2GetDefaultColorProcessing = Function(
-    'fc2GetDefaultColorProcessing', ctypes.c_int,
-    ('pDefaultMethod', ctypes.POINTER(BOOL)),
+    'fc2GetDefaultColorProcessing', ctypes.c_uint,
+    ('pDefaultMethod', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetDefaultColorProcessing.generate_spec(_lib)
 
 fc2SetDefaultOutputFormat = Function(
-    'fc2SetDefaultOutputFormat', ctypes.c_int,
-    ('format', ctypes.c_int),
+    'fc2SetDefaultOutputFormat', ctypes.c_uint,
+    ('format', ctypes.c_uint),
 )
 fc2SetDefaultOutputFormat.generate_spec(_lib)
 
 fc2GetDefaultOutputFormat = Function(
-    'fc2GetDefaultOutputFormat', ctypes.c_int,
-    ('pFormat', ctypes.POINTER(BOOL)),
+    'fc2GetDefaultOutputFormat', ctypes.c_uint,
+    ('pFormat', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2GetDefaultOutputFormat.generate_spec(_lib)
 
 fc2DetermineBitsPerPixel = Function(
-    'fc2DetermineBitsPerPixel', ctypes.c_int,
-    ('format', ctypes.c_int),
+    'fc2DetermineBitsPerPixel', ctypes.c_uint,
+    ('format', ctypes.c_uint),
     ('pBitsPerPixel', ctypes.POINTER(ctypes.c_uint)),
 )
 fc2DetermineBitsPerPixel.generate_spec(_lib)
 
 fc2SaveImage = Function(
-    'fc2SaveImage', ctypes.c_int,
+    'fc2SaveImage', ctypes.c_uint,
     ('pImage', ctypes.POINTER(fc2Image)),
     ('pFilename', ctypes.c_char_p),
-    ('format', ctypes.c_int),
+    ('format', ctypes.c_uint),
 )
 fc2SaveImage.generate_spec(_lib)
 
 fc2SaveImageWithOption = Function(
-    'fc2SaveImageWithOption', ctypes.c_int,
+    'fc2SaveImageWithOption', ctypes.c_uint,
     ('pImage', ctypes.POINTER(fc2Image)),
     ('pFilename', ctypes.c_char_p),
-    ('format', ctypes.c_int),
+    ('format', ctypes.c_uint),
     ('pOption', ctypes.c_void_p),
 )
 fc2SaveImageWithOption.generate_spec(_lib)
 
 fc2ConvertImage = Function(
-    'fc2ConvertImage', ctypes.c_int,
+    'fc2ConvertImage', ctypes.c_uint,
     ('pImageIn', ctypes.POINTER(fc2Image)),
     ('pImageOut', ctypes.POINTER(fc2Image)),
 )
 fc2ConvertImage.generate_spec(_lib)
 
 fc2ConvertImageTo = Function(
-    'fc2ConvertImageTo', ctypes.c_int,
-    ('format', ctypes.c_int),
+    'fc2ConvertImageTo', ctypes.c_uint,
+    ('format', ctypes.c_uint),
     ('pImageIn', ctypes.POINTER(fc2Image)),
     ('pImageOut', ctypes.POINTER(fc2Image)),
 )
 fc2ConvertImageTo.generate_spec(_lib)
 
 fc2GetImageData = Function(
-    'fc2GetImageData', ctypes.c_int,
+    'fc2GetImageData', ctypes.c_uint,
     ('pImage', ctypes.POINTER(fc2Image)),
     ('ppData', ctypes.POINTER(None)),
 )
 fc2GetImageData.generate_spec(_lib)
 
 fc2SetImageData = Function(
-    'fc2SetImageData', ctypes.c_int,
+    'fc2SetImageData', ctypes.c_uint,
     ('pImage', ctypes.POINTER(fc2Image)),
     ('pData', ctypes.POINTER(ctypes.c_ubyte)),
     ('dataSize', ctypes.c_uint),
@@ -1834,13 +1834,13 @@ fc2SetImageData = Function(
 fc2SetImageData.generate_spec(_lib)
 
 fc2SetImageDimensions = Function(
-    'fc2SetImageDimensions', ctypes.c_int,
+    'fc2SetImageDimensions', ctypes.c_uint,
     ('pImage', ctypes.POINTER(fc2Image)),
     ('rows', ctypes.c_uint),
     ('cols', ctypes.c_uint),
     ('stride', ctypes.c_uint),
-    ('pixelFormat', ctypes.c_int),
-    ('bayerFormat', ctypes.c_int),
+    ('pixelFormat', ctypes.c_uint),
+    ('bayerFormat', ctypes.c_uint),
 )
 fc2SetImageDimensions.generate_spec(_lib)
 
@@ -1851,44 +1851,44 @@ fc2GetImageTimeStamp = Function(
 fc2GetImageTimeStamp.generate_spec(_lib)
 
 fc2CalculateImageStatistics = Function(
-    'fc2CalculateImageStatistics', ctypes.c_int,
+    'fc2CalculateImageStatistics', ctypes.c_uint,
     ('pImage', ctypes.POINTER(fc2Image)),
     ('pImageStatisticsContext', ctypes.POINTER(fc2Context)),
 )
 fc2CalculateImageStatistics.generate_spec(_lib)
 
 fc2CreateImageStatistics = Function(
-    'fc2CreateImageStatistics', ctypes.c_int,
+    'fc2CreateImageStatistics', ctypes.c_uint,
     ('pImageStatisticsContext', ctypes.POINTER(fc2Context)),
 )
 fc2CreateImageStatistics.generate_spec(_lib)
 
 fc2DestroyImageStatistics = Function(
-    'fc2DestroyImageStatistics', ctypes.c_int,
+    'fc2DestroyImageStatistics', ctypes.c_uint,
     ('imageStatisticsContext', ctypes.c_void_p),
 )
 fc2DestroyImageStatistics.generate_spec(_lib)
 
 fc2GetChannelStatus = Function(
-    'fc2GetChannelStatus', ctypes.c_int,
+    'fc2GetChannelStatus', ctypes.c_uint,
     ('imageStatisticsContext', ctypes.c_void_p),
-    ('channel', ctypes.c_int),
+    ('channel', ctypes.c_uint),
     ('pEnabled', ctypes.POINTER(BOOL)),
 )
 fc2GetChannelStatus.generate_spec(_lib)
 
 fc2SetChannelStatus = Function(
-    'fc2SetChannelStatus', ctypes.c_int,
+    'fc2SetChannelStatus', ctypes.c_uint,
     ('imageStatisticsContext', ctypes.c_void_p),
-    ('channel', ctypes.c_int),
+    ('channel', ctypes.c_uint),
     ('enabled', ctypes.c_int),
 )
 fc2SetChannelStatus.generate_spec(_lib)
 
 fc2GetImageStatistics = Function(
-    'fc2GetImageStatistics', ctypes.c_int,
+    'fc2GetImageStatistics', ctypes.c_uint,
     ('imageStatisticsContext', ctypes.c_void_p),
-    ('channel', ctypes.c_int),
+    ('channel', ctypes.c_uint),
     ('pRangeMin', ctypes.POINTER(ctypes.c_uint)),
     ('pRangeMax', ctypes.POINTER(ctypes.c_uint)),
     ('pPixelValueMin', ctypes.POINTER(ctypes.c_uint)),
@@ -1900,13 +1900,13 @@ fc2GetImageStatistics = Function(
 fc2GetImageStatistics.generate_spec(_lib)
 
 fc2CreateAVI = Function(
-    'fc2CreateAVI', ctypes.c_int,
+    'fc2CreateAVI', ctypes.c_uint,
     ('pAVIContext', ctypes.POINTER(fc2Context)),
 )
 fc2CreateAVI.generate_spec(_lib)
 
 fc2AVIOpen = Function(
-    'fc2AVIOpen', ctypes.c_int,
+    'fc2AVIOpen', ctypes.c_uint,
     ('AVIContext', ctypes.c_void_p),
     ('pFileName', ctypes.c_char_p),
     ('pOption', ctypes.POINTER(fc2AVIOption)),
@@ -1914,7 +1914,7 @@ fc2AVIOpen = Function(
 fc2AVIOpen.generate_spec(_lib)
 
 fc2MJPGOpen = Function(
-    'fc2MJPGOpen', ctypes.c_int,
+    'fc2MJPGOpen', ctypes.c_uint,
     ('AVIContext', ctypes.c_void_p),
     ('pFileName', ctypes.c_char_p),
     ('pOption', ctypes.POINTER(fc2MJPGOption)),
@@ -1922,7 +1922,7 @@ fc2MJPGOpen = Function(
 fc2MJPGOpen.generate_spec(_lib)
 
 fc2H264Open = Function(
-    'fc2H264Open', ctypes.c_int,
+    'fc2H264Open', ctypes.c_uint,
     ('AVIContext', ctypes.c_void_p),
     ('pFileName', ctypes.c_char_p),
     ('pOption', ctypes.POINTER(fc2H264Option)),
@@ -1930,56 +1930,56 @@ fc2H264Open = Function(
 fc2H264Open.generate_spec(_lib)
 
 fc2AVIAppend = Function(
-    'fc2AVIAppend', ctypes.c_int,
+    'fc2AVIAppend', ctypes.c_uint,
     ('AVIContext', ctypes.c_void_p),
     ('pImage', ctypes.POINTER(fc2Image)),
 )
 fc2AVIAppend.generate_spec(_lib)
 
 fc2AVIClose = Function(
-    'fc2AVIClose', ctypes.c_int,
+    'fc2AVIClose', ctypes.c_uint,
     ('AVIContext', ctypes.c_void_p),
 )
 fc2AVIClose.generate_spec(_lib)
 
 fc2DestroyAVI = Function(
-    'fc2DestroyAVI', ctypes.c_int,
+    'fc2DestroyAVI', ctypes.c_uint,
     ('AVIContext', ctypes.c_void_p),
 )
 fc2DestroyAVI.generate_spec(_lib)
 
 fc2GetSystemInfo = Function(
-    'fc2GetSystemInfo', ctypes.c_int,
+    'fc2GetSystemInfo', ctypes.c_uint,
     ('pSystemInfo', ctypes.POINTER(fc2SystemInfo)),
 )
 fc2GetSystemInfo.generate_spec(_lib)
 
 fc2GetLibraryVersion = Function(
-    'fc2GetLibraryVersion', ctypes.c_int,
+    'fc2GetLibraryVersion', ctypes.c_uint,
     ('pVersion', ctypes.POINTER(fc2Version)),
 )
 fc2GetLibraryVersion.generate_spec(_lib)
 
 fc2LaunchBrowser = Function(
-    'fc2LaunchBrowser', ctypes.c_int,
+    'fc2LaunchBrowser', ctypes.c_uint,
     ('pAddress', ctypes.c_char_p),
 )
 fc2LaunchBrowser.generate_spec(_lib)
 
 fc2LaunchHelp = Function(
-    'fc2LaunchHelp', ctypes.c_int,
+    'fc2LaunchHelp', ctypes.c_uint,
     ('pFileName', ctypes.c_char_p),
 )
 fc2LaunchHelp.generate_spec(_lib)
 
 fc2LaunchCommand = Function(
-    'fc2LaunchCommand', ctypes.c_int,
+    'fc2LaunchCommand', ctypes.c_uint,
     ('pCommand', ctypes.c_char_p),
 )
 fc2LaunchCommand.generate_spec(_lib)
 
 fc2LaunchCommandAsync = Function(
-    'fc2LaunchCommandAsync', ctypes.c_int,
+    'fc2LaunchCommandAsync', ctypes.c_uint,
     ('pCommand', ctypes.c_char_p),
     ('pCallback', ctypes.POINTER(None)),
     ('pUserData', ctypes.c_void_p),
@@ -1988,12 +1988,12 @@ fc2LaunchCommandAsync.generate_spec(_lib)
 
 fc2ErrorToDescription = Function(
     'fc2ErrorToDescription', ctypes.c_char_p,
-    ('error', ctypes.c_int),
+    ('error', ctypes.c_uint),
 )
 fc2ErrorToDescription.generate_spec(_lib)
 
 fc2GetCycleTime = Function(
-    'fc2GetCycleTime', ctypes.c_int,
+    'fc2GetCycleTime', ctypes.c_uint,
     ('context', ctypes.c_void_p),
     ('pTimeStamp', ctypes.POINTER(fc2TimeStamp)),
 )
