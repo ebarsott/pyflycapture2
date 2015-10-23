@@ -18,6 +18,14 @@ class FlyCapture2Error(Exception):
     pass
 
 
+class FlyCapture2ConfigError(FlyCapture2Error):
+    pass
+
+
+def as_dict(obj):
+    return {a: getattr(obj, a) for a in dir(obj) if a[0] != '_'}
+
+
 def check_return(f, *args, **kwargs):
     r = f(*args, **kwargs)
     if r != 0:
@@ -120,8 +128,20 @@ class PointGrey(object):
             packet_size, percent)
         return settings, packet_size.value, percent.value
 
+
+    def validate_config(self, settings):
+        self.connect()
+        packet_info = raw.fc2Format7PacketInfo()
+        valid = ctypes.c_int(0)
+        check_return(
+            raw.fc2ValidateFormat7Settings, c._c, settings, valid, packet_info)
+        return bool(valid.value)
+
     def set_config(self, settings, percent=100.):
         self.connect()
+        if not validate_config(settings):
+            raise FlyCapture2ConfigError(
+                "Invalid settings: %s" % as_dict(settings))
         percent = ctypes.c_float(percent)
         check_return(
             raw.fc2SetFormat7Configuration, self._c, settings, percent)
@@ -151,12 +171,19 @@ class PointGrey(object):
         check_return(raw.fc2StopCapture, self._c)
         self.capturing = False
 
-    def grab(self):
+    def raw_grab(self):
         self.start_capture()
         im = raw.fc2Image()
         check_return(raw.fc2CreateImage, im)
         check_return(raw.fc2RetrieveBuffer, self._c, im)
+        self.stop_capture()
+        return im
+
+    def grab(self):
+        im = self.raw_grab()
+        meta = as_dict(im)
+        del meta['pData']
         a = numpy.ctypeslib.as_array(im.pData, (im.rows, im.cols)).copy()
         check_return(raw.fc2DestroyImage, im)
-        self.stop_capture()  # FIXME?
-        return a
+        self.stop_capture()
+        return a, meta
