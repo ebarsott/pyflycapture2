@@ -58,15 +58,37 @@ def convert_format(im, pixel_format=None):
         return im
     if pixel_format not in consts.pixel_formats:
         pixel_format = 'FC2_PIXEL_FORMAT_%s' % pixel_format.upper()
-    pixel_format = consts.pixel_formats[pixel_format]
-    print pixel_format
+    if isinstance(pixel_format, (str, unicode)):
+        pixel_format = consts.pixel_formats[pixel_format]
     if im.format == pixel_format:
-        print "skipping convert"
         return im
     imo = structs.FCImage.get()
     errors.check_return(raw.fc2ConvertImageTo, pixel_format, im, imo)
-    print "converting: %s %s" % (im.format, imo.format)
     return imo
+
+
+def resolve_property_name(name):
+    if name not in consts.property_types:
+        name = 'FC2_%s' % name.upper()
+    if isinstance(name, (str, unicode)):
+        name = consts.property_types[name]
+    return name
+
+
+def resolve_video_mode(self, mode):
+    if mode not in consts.video_modes:
+        mode = 'FC2_VIDEOMODE_%s' % mode
+    if isinstance(mode, (str, unicode)):
+        mode = consts.video_modes[mode]
+    return mode
+
+
+def resolve_frame_rate(self, frame_rate):
+    if frame_rate not in consts.frame_rates:
+        frame_rate = 'FC2_FRAMERATE_%s' % frame_rate
+    if isinstance(frame_rate, (str, unicode)):
+        frame_rate = consts.frame_rates[frame_rate]
+    return frame_rate
 
 
 def image_to_array(im, pixel_format=None):
@@ -87,13 +109,6 @@ def image_to_array(im, pixel_format=None):
     return a, meta
 
 
-# TODO fc2ConvertImageTo to correct bayer? or to grey?
-# TODO fc2GetFormat7Info contains: maxHeight maxWidth etc...
-# TODO fc2GetCameraInfo contains: sensor info
-# TODO fc2GetProperty, fc2GetPropertyInfo
-# TODO mode for setting non-format7 stuff:
-#  fc2GetVideoModeAndFrameRate use ...Info to check if supported
-
 class PointGrey(object):
     def __init__(self, identifier=0, context=None):
         if context is None:
@@ -102,7 +117,86 @@ class PointGrey(object):
         self.connected = False
         self.capturing = False
 
-    def get_config(self):
+    def get_camera_info(self, as_dictionary=True):
+        self.connect()
+        ci = raw.fc2CameraInfo()
+        errors.check_return(raw.fc2GetCameraInfo, self._c, ci)
+        if not as_dictionary:
+            return ci
+        return as_dict(ci)
+
+    def get_property(self, name, as_dictionary=True):
+        self.connect()
+        name = resolve_property_name(name)
+        p = raw.fc2Property()
+        p.type = name
+        errors.check_return(raw.fc2GetProperty, self._c, p)
+        if not as_dictionary:
+            return p
+        return as_dict(p)
+
+    def set_property(self, name, **kwargs):
+        if len(kwargs) == 0:
+            return
+        self.connect()
+        name = resolve_property_name(name)
+        p = self.get_property(name, as_dictionary=True)
+        for k in kwargs:
+            setattr(p, k, kwargs[k])
+        errors.check_return(raw.fc2SetProperty, self._c, p)
+
+    def get_property_info(self, name, as_dictionary=True):
+        self.connect()
+        name = resolve_property_name(name)
+        i = raw.fc2PropertyInfo()
+        i.type = name
+        errors.check_return(raw.fc2GetPropertyInfo, self._c, i)
+        if not as_dictionary:
+            return i
+        return as_dict(i)
+
+    def get_video_mode(self):
+        self.connect()
+        mode = ctypes.c_uint(0)
+        frame_rate = ctypes.c_uint(0)
+        errors.check_return(
+            raw.fc2GetVideoModeAndFrameRate, self._c,
+            mode, frame_rate)
+        return (
+            consts.video_modes[mode.value],
+            consts.frame_rates[frame_rate.value])
+
+    def set_video_mode(self, mode, frame_rate):
+        self.connect()
+        mode = resolve_video_mode(mode)
+        frame_rate = resolve_frame_rate(frame_rate)
+        if not self.validate_video_mode(mode, frame_rate):
+            raise errors.FlyCapture2ConfigError(
+                "Invalid video mode: %s, %s" % (mode, frame_rate))
+        errors.check_return(
+            raw.fc2GetVideoModeAndFrameRateInfo, self._c,
+            mode, frame_rate)
+
+    def validate_video_mode(self, mode, frame_rate):
+        self.connect()
+        mode = resolve_video_mode(mode)
+        frame_rate = resolve_frame_rate(frame_rate)
+        supported = ctypes.c_int(0)
+        errors.check_return(
+            raw.fc2GetVideoModeAndFrameRateInfo, self._c,
+            mode, frame_rate, supported)
+        return supported.value
+
+    def get_format7_info(self, as_dictionary=True):
+        self.connect()
+        fi = raw.fc2Format7Info()
+        supported = ctypes.c_int(0)
+        errors.check_return(raw.fc2GetFormat7Info, self._c, fi, supported)
+        if not as_dictionary:
+            return fi, supported.value
+        return as_dict(fi), supported.value
+
+    def get_format7_settings(self):
         self.connect()
         settings = raw.fc2Format7ImageSettings()
         packet_size = ctypes.c_uint()
@@ -114,7 +208,7 @@ class PointGrey(object):
             structs.Format7Settings(settings), packet_size.value,
             percent.value)
 
-    def validate_config(self, settings):
+    def validate_format7_settings(self, settings):
         self.connect()
         if isinstance(settings, structs.Format7Settings):
             settings = settings.unwrap()
@@ -125,7 +219,7 @@ class PointGrey(object):
             valid, packet_info)
         return bool(valid.value)
 
-    def set_config(self, settings, percent=100.):
+    def set_format7_settings(self, settings, percent=100.):
         self.connect()
         if isinstance(settings, structs.Format7Settings):
             settings = settings.unwrap()
@@ -168,12 +262,9 @@ class PointGrey(object):
         self.stop_capture()
         return im
 
-    def grab(self):
+    def grab(self, pixel_format=None):
         im = self.raw_grab()
-        a, meta = image_to_array(im)
-        # TODO if this is bayer encoded, decode it
-        if im.bayerFormat != 0:
-            pass
+        a, meta = image_to_array(im, pixel_format)
         errors.check_return(raw.fc2DestroyImage, im)
         self.stop_capture()
         return a, meta
