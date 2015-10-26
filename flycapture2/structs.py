@@ -1,6 +1,37 @@
 #!/usr/bin/env python
 
+import atexit
+
+from . import errors
 from . import raw
+
+
+class FCImage(object):
+    instances = []
+
+    @classmethod
+    def get(cls, index=None):
+        if index is None:
+            index = len(cls.instances) + 1
+        if index > len(cls.instances):
+            return cls.new()
+        return cls.instances[index]
+
+    @classmethod
+    def new(cls):
+        im = raw.fc2Image()
+        errors.check_return(raw.fc2CreateImage, im)
+        cls.instances.append(im)
+        return im
+
+    @classmethod
+    def dispose(cls):
+        for instance in cls.instances:
+            errors.check_return(raw.fc2DestroyImage, instance)
+        cls.instances = []
+
+
+atexit.register(FCImage.dispose)
 
 
 class WrappedStruct(object):
@@ -38,4 +69,3 @@ class Format7Settings(WrappedStruct):
                 raise KeyError("Invalid pixel_format: %s" % pixel_format)
             pixel_format = raw.fc2PixelFormat[pixel_format]
         self.pixelFormat = pixel_format
-

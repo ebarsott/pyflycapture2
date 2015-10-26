@@ -26,7 +26,7 @@ class Context(object):
     def dispose(cls):
         for instance in cls.instances:
             #print "disposing of context %s" % hex(id(instance))
-            raw.fc2DestroyContext(instance)
+            errors.check_return(raw.fc2DestroyContext, instance)
         cls.instances = []
 
 

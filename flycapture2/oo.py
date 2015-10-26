@@ -4,6 +4,7 @@ import ctypes
 
 import numpy
 
+from . import consts
 from . import ctx
 from . import errors
 from . import raw
@@ -50,6 +51,40 @@ def get_camera_handle(identifier, context=None):
         errors.check_return(
             raw.fc2GetCameraFromIndex, context, int(identifier), g)
     return g
+
+
+def convert_format(im, pixel_format=None):
+    if pixel_format is None:
+        return im
+    if pixel_format not in consts.pixel_formats:
+        pixel_format = 'FC2_PIXEL_FORMAT_%s' % pixel_format.upper()
+    pixel_format = consts.pixel_formats[pixel_format]
+    print pixel_format
+    if im.format == pixel_format:
+        print "skipping convert"
+        return im
+    imo = structs.FCImage.get()
+    errors.check_return(raw.fc2ConvertImageTo, pixel_format, im, imo)
+    print "converting: %s %s" % (im.format, imo.format)
+    return imo
+
+
+def image_to_array(im, pixel_format=None):
+    imo = convert_format(im, pixel_format)
+    meta = as_dict(imo)
+    del meta['pData']
+    meta['bayerFormat'] = consts.bayer_tile_formats[meta['bayerFormat']]
+    meta['format'] = consts.pixel_formats[meta['format']]
+    # what about rgb?
+    depth = imo.dataSize / (imo.cols * imo.rows)
+    if depth == 1:
+        a = numpy.ctypeslib.as_array(imo.pData, (imo.rows, imo.cols)).copy()
+    else:
+        a = numpy.ctypeslib.as_array(
+            imo.pData, (imo.rows, imo.cols, depth)).copy()
+    if imo is not im:
+        raw.fc2DestroyImage(imo)
+    return a, meta
 
 
 # TODO fc2ConvertImageTo to correct bayer? or to grey?
@@ -128,17 +163,17 @@ class PointGrey(object):
 
     def raw_grab(self):
         self.start_capture()
-        im = raw.fc2Image()
-        errors.check_return(raw.fc2CreateImage, im)
+        im = structs.FCImage.get()
         errors.check_return(raw.fc2RetrieveBuffer, self._c, im)
         self.stop_capture()
         return im
 
     def grab(self):
         im = self.raw_grab()
-        meta = as_dict(im)
-        del meta['pData']
-        a = numpy.ctypeslib.as_array(im.pData, (im.rows, im.cols)).copy()
+        a, meta = image_to_array(im)
+        # TODO if this is bayer encoded, decode it
+        if im.bayerFormat != 0:
+            pass
         errors.check_return(raw.fc2DestroyImage, im)
         self.stop_capture()
         return a, meta
