@@ -25,13 +25,19 @@ class FCImage(object):
         return im
 
     @classmethod
-    def dispose(cls):
+    def destroy(cls, im):
+        if im in cls.instances:
+            errors.check_return(raw.fc2DestroyImage, im)
+            cls.instances.remove(im)
+
+    @classmethod
+    def destroy_all(cls):
         for instance in cls.instances:
             errors.check_return(raw.fc2DestroyImage, instance)
         cls.instances = []
 
 
-atexit.register(FCImage.dispose)
+atexit.register(FCImage.destroy_all)
 
 
 class WrappedStruct(object):
@@ -65,6 +71,8 @@ class Format7Settings(WrappedStruct):
 
     def set_pixel_format(self, pixel_format):
         if isinstance(pixel_format, (str, unicode)):
+            if pixel_format not in raw.fc2PixelFormat:
+                pixel_format = 'FC2_PIXEL_FORMAT_%s' % (pixel_format.upper(), )
             if pixel_format not in raw.fc2PixelFormat:
                 raise KeyError("Invalid pixel_format: %s" % pixel_format)
             pixel_format = raw.fc2PixelFormat[pixel_format]

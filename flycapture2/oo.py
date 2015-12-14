@@ -105,6 +105,7 @@ def image_to_array(im, pixel_format=None):
         a = numpy.ctypeslib.as_array(
             imo.pData, (imo.rows, imo.cols, depth)).copy()
     if imo is not im:
+        structs.FCImage.destroy(imo)
         raw.fc2DestroyImage(imo)
     return a, meta
 
@@ -116,6 +117,17 @@ class PointGrey(object):
         self._g = get_camera_handle(identifier, context=self._c)
         self.connected = False
         self.capturing = False
+
+    def get_config(self, as_dictionary=True):
+        self.connect()
+        c = raw.fc2Config()
+        errors.check_return(raw.fc2GetConfiguration, self._c, c)
+        if not as_dictionary:
+            return c
+        return as_dict(c)
+
+    def set_config(self, **kwargs):
+        pass
 
     def get_camera_info(self, as_dictionary=True):
         self.connect()
@@ -223,7 +235,7 @@ class PointGrey(object):
         self.connect()
         if isinstance(settings, structs.Format7Settings):
             settings = settings.unwrap()
-        if not self.validate_config(settings):
+        if not self.validate_format7_settings(settings):
             raise errors.FlyCapture2ConfigError(
                 "Invalid settings: %s" % as_dict(settings))
         percent = ctypes.c_float(percent)
@@ -242,10 +254,33 @@ class PointGrey(object):
         errors.check_return(raw.fc2Disconnect, self._c)
         self.connected = False
 
+    def allocate_buffers(self, s=3932160, n=10):
+        # I'm not sure what this is for or even if it's necessary
+        return
+        #im = self.raw_grab(stop=False)
+        #im = structs.FCImage.get()
+        #errors.check_return(raw.fc2RetrieveBuffer, self._c, im)
+        #size = int(im.dataSize)
+        #errors.check_return(raw.fc2DestroyImage, im)
+        size = int(s)
+        #buffers = (ctypes.c_ubyte * (size * n))()
+        self._buffers = numpy.empty(size * (n + 1), dtype='uint8')
+        buffers = self._buffers.ctypes.data_as(
+            ctypes.POINTER(ctypes.c_ubyte))
+        #buffers = ctypes.create_string_buffer(0, size * n)
+        # config has number of buffers?
+        # unsigned char * buffers
+        # int size
+        # int n_buffers
+        errors.check_return(
+            raw.fc2SetUserBuffers, self._c, buffers, size, n)
+
     def start_capture(self):
         if self.capturing:
             return
         self.connect()
+        # TODO setup user buffers
+        #self.allocate_buffers()
         errors.check_return(raw.fc2StartCapture, self._c)
         self.capturing = True
 
@@ -255,16 +290,22 @@ class PointGrey(object):
         errors.check_return(raw.fc2StopCapture, self._c)
         self.capturing = False
 
-    def raw_grab(self):
+    def raw_grab(self, stop=True):
         self.start_capture()
         im = structs.FCImage.get()
         errors.check_return(raw.fc2RetrieveBuffer, self._c, im)
-        self.stop_capture()
+        if stop:
+            self.stop_capture()
         return im
 
-    def grab(self, pixel_format=None):
-        im = self.raw_grab()
+    def grab(self, pixel_format=None, stop=True):
+        im = self.raw_grab(stop=False)
+        if im.receivedDataSize == 0:
+            # this is an empty frame, regrab
+            # to avoid these, don't start/stop grab so often
+            return self.grab(pixel_format=pixel_format, stop=stop)
         a, meta = image_to_array(im, pixel_format)
-        errors.check_return(raw.fc2DestroyImage, im)
-        self.stop_capture()
+        structs.FCImage.destroy(im)
+        if stop:
+            self.stop_capture()
         return a, meta
