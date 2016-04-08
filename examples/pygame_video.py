@@ -80,14 +80,11 @@ focus = False
 cooling = False
 focus_values = []
 max_focus = -float('inf')
-if has_cv2:
-    video = cv2.VideoWriter(
-        'output.avi', cv2.VideoWriter_fourcc('X', 'V', 'I', 'D'),
-        frame_rate, (w, h))
 quit = False
 recording = False
+video = None
+video_index = 0
 while not quit:
-    print("tick")
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             #c.stop_acquisition()
@@ -119,9 +116,18 @@ while not quit:
                 if has_cv2:
                     recording = not recording
                     if recording:
-                        print "Started recording"
+                        print "Started recording: %s" % video_index
+                        if has_cv2:
+                            video = cv2.VideoWriter(
+                                '%03i.avi' % video_index,
+                                cv2.VideoWriter_fourcc('X', 'V', 'I', 'D'),
+                                frame_rate, (w, h))
+                            video_index += 1
                     else:
                         print "Stopped recording"
+                        if video is not None:
+                            video.release()
+                            video = None
             if event.key == pygame.K_b:
                 if bg is None:
                     bg = im
@@ -139,7 +145,7 @@ while not quit:
     #c.buffers.queue()
     #im = c.capture()
     im, _ = c.grab('rgb8', stop=False)
-    if has_cv2 and recording:
+    if has_cv2 and recording and video is not None:
         video.write(im[:, :, ::-1])
     #print im.min(), im.max(), im.mean(), im.std()
     im = im[::scale, ::scale, :]
@@ -196,4 +202,5 @@ while not quit:
 c.disconnect()
 sys.exit()
 if has_cv2:
-    video.release()
+    if video is not None:
+        video.release()
