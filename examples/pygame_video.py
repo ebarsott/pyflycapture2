@@ -77,13 +77,13 @@ im = None
 bg = None
 stretch = False
 focus = False
-cooling = False
 focus_values = []
 max_focus = -float('inf')
 quit = False
 recording = False
 video = None
 video_index = 0
+zoom = 1
 while not quit:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -110,8 +110,12 @@ while not quit:
                 stretch = not stretch
             if event.key == pygame.K_f:
                 focus = not focus
-            if event.key == pygame.K_c:
-                cooling = not cooling
+            if event.key == pygame.K_z:
+                zoom += 1
+            if event.key == pygame.K_x:
+                zoom -= 1
+                if zoom < 1:
+                    zoom = 1
             if event.key == pygame.K_r:
                 if has_cv2:
                     recording = not recording
@@ -159,10 +163,6 @@ while not quit:
     #    im = ((im - im.min()) / (im.max() - im.min()) * 2 ** 16.).astype('u2')
     #    #im = (im * 255).astype('u2')
     #print "Display frame %s" % frame_count
-    #if cooling:
-    #    if not c.SensorCooling:
-    #        c.SensorCooling = True
-    #    print c.SensorTemperature, c.TemperatureStatus
     #clip = (im[::scale, ::scale].T).astype('uint32')
     #if stretch:
     #    clip = clip - clip.min()
