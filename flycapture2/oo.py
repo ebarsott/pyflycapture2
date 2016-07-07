@@ -152,7 +152,7 @@ class PointGrey(object):
             return
         self.connect()
         name = resolve_property_name(name)
-        p = self.get_property(name, as_dictionary=True)
+        p = self.get_property(name, as_dictionary=False)
         for k in kwargs:
             setattr(p, k, kwargs[k])
         errors.check_return(raw.fc2SetProperty, self._c, p)
