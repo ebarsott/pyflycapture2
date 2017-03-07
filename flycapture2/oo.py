@@ -111,9 +111,17 @@ def image_to_array(im, pixel_format=None):
 
 
 class PointGrey(object):
+    n_instances = 0
+
     def __init__(self, identifier=0, context=None):
         if context is None:
-            self._c = ctx.get()
+            if PointGrey.n_instances == 0:
+                self._c = ctx.get()
+            else:
+                self._c = ctx.new()
+            PointGrey.n_instances += 1
+        else:
+            self._c = context
         self._g = get_camera_handle(identifier, context=self._c)
         self.connected = False
         self.capturing = False
