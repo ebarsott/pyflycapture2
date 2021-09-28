@@ -70,7 +70,7 @@ class Format7Settings(WrappedStruct):
         raise KeyError("Invalid pixel_format: %s" % self.pixelFormat)
 
     def set_pixel_format(self, pixel_format):
-        if isinstance(pixel_format, (str, unicode)):
+        if isinstance(pixel_format, str):
             if pixel_format not in raw.fc2PixelFormat:
                 pixel_format = 'FC2_PIXEL_FORMAT_%s' % (pixel_format.upper(), )
             if pixel_format not in raw.fc2PixelFormat:

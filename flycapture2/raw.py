@@ -16,7 +16,7 @@ class Enum(dict):
         return self.reverse[value]
 
     def __getitem__(self, k):
-        if isinstance(k, (str, unicode)):
+        if isinstance(k, str):
             return self.name_to_value(k)
         elif isinstance(k, int):
             return self.value_to_name(k)
@@ -106,7 +106,7 @@ class Function(object):
                 "Invalid number of args {} != {}".format(
                     len(args), len(self.converter)))
         return self.func(*[
-            c(a) for (c, a) in itertools.izip(self.converter, args)])
+            c(a) for (c, a) in zip(self.converter, args)])
 
     def __dump__(self):
         """

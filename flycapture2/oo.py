@@ -44,7 +44,7 @@ def get_camera_handle(identifier, context=None):
     if context is None:
         context = ctx.get()
     g = raw.fc2PGRGuid()
-    if isinstance(identifier, (str, unicode)):
+    if isinstance(identifier, str):
         errors.check_return(
             raw.fc2GetCameraFromSerialNumber, context, int(identifier), g)
     else:
@@ -58,7 +58,7 @@ def convert_format(im, pixel_format=None):
         return im
     if pixel_format not in consts.pixel_formats:
         pixel_format = 'FC2_PIXEL_FORMAT_%s' % pixel_format.upper()
-    if isinstance(pixel_format, (str, unicode)):
+    if isinstance(pixel_format, str):
         pixel_format = consts.pixel_formats[pixel_format]
     if im.format == pixel_format:
         return im
@@ -70,7 +70,7 @@ def convert_format(im, pixel_format=None):
 def resolve_property_name(name):
     if name not in consts.property_types:
         name = 'FC2_%s' % name.upper()
-    if isinstance(name, (str, unicode)):
+    if isinstance(name, str):
         name = consts.property_types[name]
     return name
 
@@ -78,7 +78,7 @@ def resolve_property_name(name):
 def resolve_video_mode(self, mode):
     if mode not in consts.video_modes:
         mode = 'FC2_VIDEOMODE_%s' % mode
-    if isinstance(mode, (str, unicode)):
+    if isinstance(mode, str):
         mode = consts.video_modes[mode]
     return mode
 
@@ -86,7 +86,7 @@ def resolve_video_mode(self, mode):
 def resolve_frame_rate(self, frame_rate):
     if frame_rate not in consts.frame_rates:
         frame_rate = 'FC2_FRAMERATE_%s' % frame_rate
-    if isinstance(frame_rate, (str, unicode)):
+    if isinstance(frame_rate, str):
         frame_rate = consts.frame_rates[frame_rate]
     return frame_rate
 
