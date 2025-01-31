@@ -1,0 +1,12 @@
+setup.py
+flycapture2/__init__.py
+flycapture2/consts.py
+flycapture2/ctx.py
+flycapture2/errors.py
+flycapture2/oo.py
+flycapture2/raw.py
+flycapture2/structs.py
+flycapture2.egg-info/PKG-INFO
+flycapture2.egg-info/SOURCES.txt
+flycapture2.egg-info/dependency_links.txt
+flycapture2.egg-info/top_level.txt

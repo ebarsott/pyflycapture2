@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import cPickle as pickle
+import pickle as pickle
 import sys
 import time
 
@@ -34,7 +34,7 @@ etime = 1000  # ms
 if len(sys.argv) > 2:
     etime = int(sys.argv[2])
 
-print "Opening camera: %s" % handle
+print("Opening camera: %s" % handle)
 c = flycapture2.PointGrey(handle)
 #print "Opened camera: %s" % c.SerialNumber
 #c.CycleMode = 'Continuous'
@@ -59,7 +59,7 @@ scale = 2
 frame_count = 0
 
 
-print "Starting pygame"
+print("Starting pygame")
 pygame.init()
 screen = pygame.display.set_mode(
     (w/scale, h/scale),
@@ -68,10 +68,10 @@ screen = pygame.display.set_mode(
 pygame.display.set_caption("Live Video")
 clock = pygame.time.Clock()
 
-print "Queuing buffers"
+print("Queuing buffers")
 #c.buffers.nbytes = c.ImageSizeBytes
 
-print "Start Acquisition"
+print("Start Acquisition")
 #c.start_acquisition()
 im = None
 bg = None
@@ -93,11 +93,11 @@ while not quit:
             quit = True
             continue
         if event.type == pygame.KEYDOWN:
-            print "Keypressed: %s" % event.key
+            print("Keypressed: %s" % event.key)
             if event.key == pygame.K_SPACE:
                 if im is not None:
                     fn = '%i.tif' % int(time.time())
-                    print "Saving image to %s" % fn
+                    print("Saving image to %s" % fn)
                     pylab.imsave(fn, im, cmap=pylab.cm.gray)
             delta_etime = None
             if event.key == pygame.K_UP:
@@ -124,7 +124,7 @@ while not quit:
                 if has_cv2:
                     recording = not recording
                     if recording:
-                        print "Started recording: %s" % video_index
+                        print("Started recording: %s" % video_index)
                         if has_cv2:
                             video = cv2.VideoWriter(
                                 '%03i.avi' % video_index,
@@ -132,7 +132,7 @@ while not quit:
                                 frame_rate, (w, h))
                             video_index += 1
                     else:
-                        print "Stopped recording"
+                        print("Stopped recording")
                         if video is not None:
                             video.release()
                             video = None
@@ -147,7 +147,7 @@ while not quit:
             if delta_etime is not None:
                 etime = max(10, min(etime + delta_etime, 30000))
                 #c.ExposureTime = etime / 1000.
-                print "Set exposure time to %i" % etime
+                print("Set exposure time to %i" % etime)
 
     #print "\tQueuing buffer"
     #c.buffers.queue()
